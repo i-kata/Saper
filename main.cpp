@@ -23,17 +23,32 @@ public:
 MinesweeperBoard::MinesweeperBoard()
 {
   width = 10;
-  height = 10; // dziekuje
-
+  height = 10; 
+  
   for (int wier = 0; wier < height; wier++)
   {
     for (int kol = 0; kol < width; kol++)
     {
-      Board [wier][kol].hasMine = true;
-      Board [wier][kol].isRevealed = true;
+      Board [wier][kol].hasMine = false;
+      Board [wier][kol].isRevealed = false;
       Board [wier][kol].hasFlag = false;
     }
   }
+
+/*
+  Board [0][0].hasMine = true;
+  Board [0][0].hasFlag = false;
+  Board [0][0].isRevealed = false;
+
+  Board [1][1].hasMine = false;
+  Board [1][1].hasFlag = false;
+  Board [1][1].isRevealed = true;
+
+  Board [0][2].hasMine = true;
+  Board [0][2].hasFlag = true;
+  Board [0][2].isRevealed = false;
+*/
+
 }
 
 void MinesweeperBoard::debug_display() const
