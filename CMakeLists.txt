@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.10)
 project (SAPER)
 
-set ( SOURCES main.cpp )
+set ( SOURCES main.cpp MinesweeperBoard.cpp )
 
 
 add_compile_options(-Wall -Wextra -g)
