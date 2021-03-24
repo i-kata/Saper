@@ -277,12 +277,44 @@ char MinesweeperBoard::getFieldInfo(int wier, int kol) const
 
 GameState MinesweeperBoard::getGameState() const
 {
-    if (FINISHED_LOSS)
+
+    bool hasLost;
+
+    int fieldCount = 0;
+
+    for (int wier = 0; wier < height; wier++)
+    {
+        for (int kol = 0; kol < width; kol++)
+        {
+            if (Board[wier][kol].hasMine == true and Board[wier][kol].isRevealed == true)
+                hasLost = true;
+        }
+    }
+
+    for (int wier = 0; wier < height; wier++)
+    {
+        for (int kol = 0; kol < width; kol++)
+        {
+            if (Board[wier][kol].hasMine == true and Board[wier][kol].isRevealed == false)
+                hasLost = false;
+        }
+    }
+
+    for (int wier = 0; wier < height; wier++)
+    {
+        for (int kol = 0; kol < width; kol++)
+        {
+            if (Board[wier][kol].hasMine == false and Board[wier][kol].isRevealed == true)
+                fieldCount++;
+        }
+    }
+
+    if (fieldCount != (width * height) - (countMines(width, height)))
+        return RUNNING;
+
+    if (hasLost == true)
         return FINISHED_LOSS;
 
-    if (FINISHED_WIN)
+    if (hasLost == false)
         return FINISHED_WIN;
-
-    if (RUNNING)
-        return RUNNING;
 }
