@@ -130,35 +130,14 @@ int MinesweeperBoard::countMines(int wier, int kol) const
 {
     int minecount = 0;
 
-    if (Board[wier][kol].isRevealed == false)
-        return -1;
-
-    if (wier > height or kol > width)
-        return -1;
-
-    if (Board[wier - 1][kol - 1].hasMine == true)
-        minecount += 1;
-
-    if (Board[wier][kol - 1].hasMine == true)
-        minecount += 1;
-
-    if (Board[wier + 1][kol - 1].hasMine == true)
-        minecount += 1;
-
-    if (Board[wier + 1][kol].hasMine == true)
-        minecount += 1;
-
-    if (Board[wier - 1][kol].hasMine == true)
-        minecount += 1;
-
-    if (Board[wier + 1][kol + 1].hasMine == true)
-        minecount += 1;
-
-    if (Board[wier][kol + 1].hasMine == true)
-        minecount += 1;
-
-    if (Board[wier - 1][kol + 1].hasMine == true)
-        minecount += 1;
+    for (int wiersz = wier - 1; wiersz < wier + 2; wiersz++)
+    {
+        for (int kolumna = kol - 1; kolumna < kol + 2; kolumna++)
+        {
+            if (Board[wiersz][kolumna].hasMine == true)
+                minecount++;
+        }
+    }
 
     return minecount;
 }
