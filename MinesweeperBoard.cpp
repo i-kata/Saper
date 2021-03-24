@@ -278,7 +278,7 @@ char MinesweeperBoard::getFieldInfo(int wier, int kol) const
 GameState MinesweeperBoard::getGameState() const
 {
 
-    bool hasLost;
+    bool hasLost = false;
 
     int fieldCount = 0;
 
@@ -309,7 +309,7 @@ GameState MinesweeperBoard::getGameState() const
         }
     }
 
-    if (fieldCount != (width * height) - (countMines(width, height)))
+    if (fieldCount != (width * height) - (getMineCount()))
         return RUNNING;
 
     if (hasLost == true)
