@@ -1,11 +1,16 @@
 #include <iostream>
+#include <vector>
 #include "MinesweeperBoard.h"
 
-MinesweeperBoard::MinesweeperBoard(int width, int height, GameMode mode) : width(width), height(height)
+MinesweeperBoard::MinesweeperBoard(int width, int height, GameMode mode) : width(width), height(height), mode(mode)
 {
     width = width;
     height = height;
     mode = mode;
+
+    firstMove = true;
+
+    state = RUNNING;
 
     int minecount = 0;
 
@@ -25,7 +30,7 @@ MinesweeperBoard::MinesweeperBoard(int width, int height, GameMode mode) : width
                 if (kol == 0 and wier % 2 == 0)
                     Board[wier][kol].hasMine = true;
 
-                Board[wier][kol].isRevealed = true;
+                Board[wier][kol].isRevealed = false;
                 Board[wier][kol].hasFlag = false;
             }
         }
@@ -33,11 +38,17 @@ MinesweeperBoard::MinesweeperBoard(int width, int height, GameMode mode) : width
         if (mode == EASY)
         {
             int mines = 0.1 * width * height;
-            
-            while (minecount != mines + 1)
+
+            while (minecount < mines)
             {
-                Board[rand() % height][rand() % width].hasMine = true;
-                minecount++;
+                int wiersz = rand() % height;
+                int kolumna = rand() % width;
+
+                if (Board[wiersz][kolumna].hasMine == false)
+                {
+                    Board[wiersz][kolumna].hasMine = true;
+                    minecount++;
+                }
             }
         }
 
@@ -45,10 +56,16 @@ MinesweeperBoard::MinesweeperBoard(int width, int height, GameMode mode) : width
         {
             int mines = 0.2 * width * height;
 
-            while (minecount != mines + 1)
+            while (minecount < mines)
             {
-                Board[rand() % height][rand() % width].hasMine = true;
-                minecount++;
+                int wiersz = rand() % height;
+                int kolumna = rand() % width;
+
+                if (Board[wiersz][kolumna].hasMine == false)
+                {
+                    Board[wiersz][kolumna].hasMine = true;
+                    minecount++;
+                }
             }
         }
 
@@ -56,10 +73,17 @@ MinesweeperBoard::MinesweeperBoard(int width, int height, GameMode mode) : width
         {
             int mines = 0.3 * width * height;
 
-            while (minecount != mines + 1)
+            std::cout << mines << std::endl;
+            while (minecount < mines)
             {
-                Board[rand() % height][rand() % width].hasMine = true;
-                minecount++;
+                int wiersz = rand() % height;
+                int kolumna = rand() % width;
+
+                if (Board[wiersz][kolumna].hasMine == false)
+                {
+                    Board[wiersz][kolumna].hasMine = true;
+                    minecount++;
+                }
             }
         }
     }
@@ -68,9 +92,9 @@ MinesweeperBoard::MinesweeperBoard(int width, int height, GameMode mode) : width
 
 bool MinesweeperBoard::containedInBoard(int wier, int kol) const
 {
-    if (wier > 0 and wier < height)
+    if (wier >= 0 and wier <= height)
     {
-        if (kol > 0 and kol < width)
+        if (kol >= 0 and kol <= width)
             return true;
     }
 
@@ -138,24 +162,31 @@ int MinesweeperBoard::countMines(int wier, int kol) const
 {
     int minecount = 0;
 
-    if (containedInBoard(wier, kol) == true)
-    {
-        for (int wiersz = wier - 1; wiersz < wier + 2; wiersz++)
-        {
-            for (int kolumna = kol - 1; kolumna < kol + 2; kolumna++)
-            {
-                if (Board[wiersz][kolumna].hasMine == true)
-                    minecount++;
-            }
-        }
+    if (containedInBoard(wier - 1, kol - 1))
+        minecount++;
 
-        return minecount;
-    }
+    if (containedInBoard(wier, kol - 1))
+        minecount++;
 
-    else
-    {
-        std::cout << "Field is not contained in Board" << std::endl;
-    }
+    if (containedInBoard(wier + 1, kol - 1))
+        minecount++;
+
+    if (containedInBoard(wier - 1, kol))
+        minecount++;
+
+    if (containedInBoard(wier + 1, kol))
+        minecount++;
+
+    if (containedInBoard(wier - 1, kol + 1))
+        minecount++;
+
+    if (containedInBoard(wier, kol + 1))
+        minecount++;
+
+    if (containedInBoard(wier + 1, kol + 1))
+        minecount++;
+
+    return minecount;
 }
 
 
@@ -163,9 +194,6 @@ bool MinesweeperBoard::hasFlag(int wier, int kol) const
 {
     if (containedInBoard(wier, kol) == true)
     {
-        if (wier > height or kol > width)
-            return false;
-
         if (Board[wier][kol].hasFlag == false)
             return false;
 
@@ -193,10 +221,7 @@ void MinesweeperBoard::toggleFlag(int wier, int kol)
         if (Board[wier][kol].isRevealed == true)
             return;
 
-        if (wier > height or kol > width)
-            return;
-
-        if (FINISHED_LOSS or FINISHED_WIN)
+        if (state == FINISHED_LOSS or state == FINISHED_WIN)
             return;
     }
 
@@ -213,6 +238,8 @@ bool MinesweeperBoard::isRevealed(int wier, int kol) const
     {
         if (Board[wier][kol].isRevealed == true)
             return true;
+
+        return false;
     }
 
     else
@@ -224,57 +251,52 @@ bool MinesweeperBoard::isRevealed(int wier, int kol) const
 
 void MinesweeperBoard::revealField(int wier, int kol)
 {
-    bool notTouchedBoard = true;
 
     if (containedInBoard(wier, kol) == true)
     {
         if (Board[wier][kol].isRevealed == true)
             return;
 
-        if (wier > height or kol > width)
-            return;
-
-        if (FINISHED_LOSS or FINISHED_WIN)
-            return;
-
         if (Board[wier][kol].hasFlag == true)
+            return;
+
+        if (state == FINISHED_LOSS or state == FINISHED_WIN)
             return;
 
         if (Board[wier][kol].isRevealed == false and Board[wier][kol].hasMine == false)
             Board[wier][kol].isRevealed = true;
 
+
         if (Board[wier][kol].isRevealed == false and Board[wier][kol].hasMine == true)
         {
-            for (int i = 0; i < wier; i++)
+            int fields = width * height;
+            int notDiscoveredFields = 0;
+
+            for (int wiersz = 0; wiersz < height; wiersz++)
             {
-                for (int j = 0; j < kol; j++)
+                for (int kolumna = 0; kolumna < width; kolumna++)
                 {
-                    if (Board[i][j].isRevealed == true)
-                    {
-                        notTouchedBoard = false;
-                    }
+                    if (Board[wiersz][kolumna].isRevealed == false)
+                        notDiscoveredFields++;
                 }
             }
 
-            if (notTouchedBoard == true)
+            if (fields == notDiscoveredFields)
             {
-                Board[wier][kol].isRevealed = true;
-                Board[wier][kol].hasMine = false;
-
                 bool bombMoved = false;
 
                 while (bombMoved == false)
                 {
-                    int wiersz = rand() % height;
-                    int kolumna = rand() % width;
+                    Board[wier][kol].hasMine = false;
+                    Board[wier][kol].isRevealed = true;
 
-                    if (wiersz != wier and kolumna != kol)
+                    int newKol = rand() % width;
+                    int newWier = rand() % height;
+
+                    if (Board[newWier][newKol].hasMine == false and newKol != kol and newWier != wier)
                     {
-                        if (Board[wiersz][kolumna].hasMine == false)
-                        {
-                            Board[wiersz][kolumna].hasMine == true;
-                            bombMoved = true;
-                        }
+                        Board[newWier][newKol].hasMine = true;
+                        bombMoved = true;
                     }
                 }
             }
@@ -282,9 +304,10 @@ void MinesweeperBoard::revealField(int wier, int kol)
             else
             {
                 Board[wier][kol].isRevealed = true;
-                FINISHED_LOSS;
+                state = FINISHED_LOSS;
             }
         }
+
     }
 
     else
@@ -296,75 +319,51 @@ void MinesweeperBoard::revealField(int wier, int kol)
 
 char MinesweeperBoard::getFieldInfo(int wier, int kol) const
 {
-    char x = '0';
 
-    if (containedInBoard(wier, kol) == true)
-    {
-        if (wier > height or kol > width)
-            return '#';
+    int mineCount = countMines(wier, kol);
 
-        if (Board[wier][kol].isRevealed == false and Board[wier][kol].hasFlag == true)
-            return 'F';
+    if (containedInBoard(wier, kol) == false)
+        return '#';
 
-        if (Board[wier][kol].isRevealed == false and Board[wier][kol].hasFlag == false)
-            return '_';
+    if (Board[wier][kol].isRevealed == false and Board[wier][kol].hasFlag == true)
+        return 'F';
 
-        if (Board[wier][kol].isRevealed == true and Board[wier][kol].hasMine == true)
-            return 'x';
+    if (Board[wier][kol].isRevealed == false and Board[wier][kol].hasFlag == false)
+        return '_';
 
-        if (Board[wier][kol].isRevealed == true and countMines(wier, kol) == 0)
-            return ' ';
+    if (Board[wier][kol].isRevealed == true and Board[wier][kol].hasMine == true)
+        return 'x';
 
-        if (Board[wier][kol].isRevealed == true and countMines(wier, kol) != 0)
-            return x + countMines(wier, kol);
-    }
+    if (Board[wier][kol].isRevealed == true and mineCount == 0)
+        return ' ';
 
-    else
-    {
-        std::cout << "Field in not contained in Board" << std::endl;
-    }
+    if (Board[wier][kol].isRevealed == true and mineCount != 0)
+        return '0' + mineCount;
+
 }
 
 GameState MinesweeperBoard::getGameState() const
 {
-
-    bool hasLost = false;
-
-    int fieldCount = 0;
-
-    for (int wier = 0; wier < height; wier++)
-    {
-        for (int kol = 0; kol < width; kol++)
-        {
-            if (Board[wier][kol].hasMine == true and Board[wier][kol].isRevealed == true)
-                hasLost = true;
-        }
-    }
-
-    for (int wier = 0; wier < height; wier++)
-    {
-        for (int kol = 0; kol < width; kol++)
-        {
-            if (Board[wier][kol].hasMine == true and Board[wier][kol].isRevealed == false)
-                hasLost = false;
-        }
-    }
-
-    for (int wier = 0; wier < height; wier++)
-    {
-        for (int kol = 0; kol < width; kol++)
-        {
-            if (Board[wier][kol].hasMine == false and Board[wier][kol].isRevealed == true)
-                fieldCount++;
-        }
-    }
-
-    if (fieldCount != (width * height) - (getMineCount()))
+    if (state == RUNNING)
         return RUNNING;
 
-    if (hasLost == true)
+    else if (state == FINISHED_LOSS)
         return FINISHED_LOSS;
 
-    if (hasLost == false)
-        return FINISHED_WIN;
+    else
+    {
+        int discoveredFieldsCount = 0;
+
+        for (int wiersz = 0; wiersz < height; wiersz++)
+        {
+            for (int kolumna = 0; kolumna < width; kolumna++)
+            {
+                if (Board[wiersz][kolumna].isRevealed == true)
+                    discoveredFieldsCount++;
+            }
+        }
+
+        if (discoveredFieldsCount + getMineCount() == width*height)
+            return FINISHED_WIN;
+    }
 }

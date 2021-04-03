@@ -1,5 +1,5 @@
 #ifndef MinesweeperBoard_H_
-#define MinesweeperBoar_H_
+#define MinesweeperBoard_H_
 
 enum GameMode { DEBUG, EASY, NORMAL, HARD} ;
 enum GameState { RUNNING, FINISHED_WIN, FINISHED_LOSS };
@@ -18,12 +18,15 @@ class MinesweeperBoard
     Field Board[100][100];
     int width;
     int height;
-    
+    GameMode mode;
+    GameState state;
+    bool firstMove = false;
+
 
 private:
-    
+
     bool containedInBoard(int wier, int kol) const;
-    
+
 
 public:
 
