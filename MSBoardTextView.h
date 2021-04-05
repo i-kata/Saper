@@ -9,7 +9,7 @@ class MSBoardTextView
     MinesweeperBoard& board;
 
 public:
-    MSBoardTextView(MinesweeperBoard board);
+    MSBoardTextView(MinesweeperBoard & board);
     void display() const;
 };
 

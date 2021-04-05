@@ -162,29 +162,23 @@ int MinesweeperBoard::countMines(int wier, int kol) const
 {
     int minecount = 0;
 
-    if (containedInBoard(wier - 1, kol - 1))
-        minecount++;
+    for (int wiersz = wier - 1; wiersz < wier + 2; wiersz++)
+    {
+        for (int kolumna = kol - 1; kolumna < kol + 2; kolumna++)
+        {
+            if (containedInBoard(wiersz, kolumna) == false)
+                continue;
 
-    if (containedInBoard(wier, kol - 1))
-        minecount++;
+            else
+            {
+                if (Board[wiersz][kolumna].hasMine == true)
+                    minecount++;
+            }
+        }
+    }
 
-    if (containedInBoard(wier + 1, kol - 1))
-        minecount++;
-
-    if (containedInBoard(wier - 1, kol))
-        minecount++;
-
-    if (containedInBoard(wier + 1, kol))
-        minecount++;
-
-    if (containedInBoard(wier - 1, kol + 1))
-        minecount++;
-
-    if (containedInBoard(wier, kol + 1))
-        minecount++;
-
-    if (containedInBoard(wier + 1, kol + 1))
-        minecount++;
+    if (Board[wier][kol].hasMine == true)
+        minecount -= 1;
 
     return minecount;
 }

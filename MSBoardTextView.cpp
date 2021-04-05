@@ -1,7 +1,7 @@
 #include <iostream>
 #include "MSBoardTextView.h"
 
-MSBoardTextView::MSBoardTextView(MinesweeperBoard board) : board(board)
+MSBoardTextView::MSBoardTextView(MinesweeperBoard & board) : board(board)
 {
 
     height = board.getBoardHeight();
@@ -13,31 +13,35 @@ void MSBoardTextView::display() const
 {
     GameState state = board.getGameState();
 
+    char fieldInfo;
+
     for (int wiersz = 0; wiersz < height; wiersz++)
     {
         for (int kolumna = 0; kolumna < width; kolumna++)
         {
-            char info = board.getFieldInfo(wiersz, kolumna);
-            std::cout << info;
+            fieldInfo = board.getFieldInfo(wiersz, kolumna);
+            //std::cout << fieldInfo << " ";
 
-            if (info == '#')
+            if (fieldInfo == '#')
                 std::cout << "Not contained";
 
-            else if (info == 'F')
-                std::cout << "F";
+            else if (fieldInfo == 'F')
+                std::cout << "[ F ]";
 
-            else if (info == '_')
-                std::cout << " ? ";
+            else if (fieldInfo == '_')
+                std::cout << "[ ? ]";
 
-            else if (info == 'x')
-                std::cout << "B";
+            else if (fieldInfo == 'x')
+                std::cout << "[ B ]";
 
-            else if (info == ' ')
-                std::cout << " ";
+            else if (fieldInfo == ' ')
+                std::cout << "[   ]";
 
             else
-                std::cout << info;
+                std::cout << "  " << fieldInfo << "  ";
+
         }
+
         std::cout << std::endl;
     }
 
