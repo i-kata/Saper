@@ -42,6 +42,12 @@ void MSTextController::play()
 
         std::cout << std::endl;
 
+        if (choice == 'r' or choice == 'R')
+            choice = 82;
+
+        if (choice == 'f' or choice == 'F')
+            choice = 70;
+
         fieldInfo = board.getFieldInfo(wier, kol);
 
         if (fieldInfo == '#')
