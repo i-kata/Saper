@@ -15,10 +15,17 @@ class MSSFMLView
     int width;
     MinesweeperBoard& board;
 
+
+protected:
+
+    int fieldSizeX;
+    int fieldSizeY;
+
 public:
 
     MSSFMLView(MinesweeperBoard & board);
     void drawWidnow (sf::RenderWindow & win);
+    std::vector<int> mouse2boardConverter(int mousePosX, int mousePosY);
 };
 
 #endif

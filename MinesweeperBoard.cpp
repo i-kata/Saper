@@ -301,7 +301,6 @@ void MinesweeperBoard::revealField(int wier, int kol)
                 state = FINISHED_LOSS;
             }
         }
-
     }
 
     else
@@ -338,26 +337,29 @@ char MinesweeperBoard::getFieldInfo(int wier, int kol) const
 
 GameState MinesweeperBoard::getGameState() const
 {
-    if (state == RUNNING)
-        return RUNNING;
-
-    else if (state == FINISHED_LOSS)
+    if (state == FINISHED_LOSS)
         return FINISHED_LOSS;
 
     else
     {
-        int discoveredFieldsCount = 0;
+        int undiscoveredFields = 0;
 
-        for (int wiersz = 0; wiersz < height; wiersz++)
+        for (int wier = 0; wier < height; wier++)
         {
-            for (int kolumna = 0; kolumna < width; kolumna++)
+            for (int kol = 0; kol < width; kol ++)
             {
-                if (Board[wiersz][kolumna].isRevealed == true)
-                    discoveredFieldsCount++;
+                if (Board[wier][kol].isRevealed == true)
+                    undiscoveredFields++;
             }
         }
 
-        if (discoveredFieldsCount + getMineCount() == width*height)
+        if (undiscoveredFields == (width*height - getMineCount()))
             return FINISHED_WIN;
+
     }
+
+    return RUNNING;
 }
+
+
+
