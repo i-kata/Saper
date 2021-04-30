@@ -27,7 +27,6 @@ private:
 
     bool containedInBoard(int wier, int kol) const;
 
-
 public:
 
     MinesweeperBoard(int width, int height, GameMode mode);
@@ -46,3 +45,4 @@ public:
 };
 
 #endif
+

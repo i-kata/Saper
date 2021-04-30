@@ -58,4 +58,3 @@ void MSBoardTextView::display() const
     }
 }
 
-

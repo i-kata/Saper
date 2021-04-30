@@ -167,7 +167,6 @@ void MSSFMLView::drawWidnow(sf::RenderWindow &win)
             win.draw(sprite);
         }
     }
-    std::cout << state << std::endl;
 }
 
 std::vector<int> MSSFMLView::mouse2boardConverter(int mousePosX, int mousePosY)

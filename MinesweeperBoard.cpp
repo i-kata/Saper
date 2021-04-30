@@ -4,12 +4,6 @@
 
 MinesweeperBoard::MinesweeperBoard(int width, int height, GameMode mode) : width(width), height(height), mode(mode)
 {
-    width = width;
-    height = height;
-    mode = mode;
-
-    firstMove = true;
-
     state = RUNNING;
 
     int minecount = 0;
@@ -259,7 +253,6 @@ void MinesweeperBoard::revealField(int wier, int kol)
 
         if (Board[wier][kol].isRevealed == false and Board[wier][kol].hasMine == false)
             Board[wier][kol].isRevealed = true;
-
 
         if (Board[wier][kol].isRevealed == false and Board[wier][kol].hasMine == true)
         {

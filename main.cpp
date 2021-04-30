@@ -13,11 +13,14 @@ int main()
 
     sf::RenderWindow window (sf::VideoMode(600, 600), "Saper");
 
-    MinesweeperBoard board(10, 10, DEBUG);
+    MinesweeperBoard board(10, 10, NORMAL);
     MSSFMLView view (board);
+    board.debug_display();
 
     while (window.isOpen())
     {
+
+        window.setFramerateLimit(30);
 
         sf::Event event;
         while (window.pollEvent(event))
